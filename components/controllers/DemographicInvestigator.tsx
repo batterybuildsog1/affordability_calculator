@@ -13,7 +13,9 @@ import {
     Persona,
     FinancialProfile
 } from '@/lib/demographics';
-import { PRODUCTS } from '@/lib/model';
+import { PRODUCTS, Company, Role } from '@/lib/model';
+import { getAllCompanies } from '@/lib/companies';
+import { Building2, Briefcase } from 'lucide-react';
 
 // --- Types ---
 type PersonaId = keyof typeof PERSONA_PRESETS;
@@ -80,6 +82,14 @@ const MoneyInput = ({
 
 export default function DemographicInvestigator() {
     const [selectedPersonaId, setSelectedPersonaId] = useState<PersonaId>('solo_climber');
+    const [selectedCompany, setSelectedCompany] = useState<string>('');
+    const [selectedRole, setSelectedRole] = useState<string>('');
+    const [incomeMode, setIncomeMode] = useState<'base' | 'ote'>('base');
+
+    const companies = useMemo(() => getAllCompanies(), []);
+    const currentCompany = useMemo(() => companies.find(c => c.name === selectedCompany), [companies, selectedCompany]);
+    const currentRole = useMemo(() => currentCompany?.roles.find(r => r.title === selectedRole), [currentCompany, selectedRole]);
+
     const [profile, setProfile] = useState<FinancialProfile>({
         grossIncome: 85000,
         retirementContribution: 5000,
@@ -92,26 +102,64 @@ export default function DemographicInvestigator() {
         assets: { savings: 20000 }
     });
 
-    // Reset profile when persona changes
+    // Update income when Company/Role changes
+    useEffect(() => {
+        if (currentRole) {
+            const income = incomeMode === 'base' ? currentRole.base_salary : currentRole.ote;
+            setProfile(prev => ({ ...prev, grossIncome: income }));
+        }
+    }, [currentRole, incomeMode]);
+
+    // Reset profile when persona changes (but keep company/role if selected, or maybe reset them? Let's keep them independent for now, but persona sets defaults)
     useEffect(() => {
         const persona = PERSONA_PRESETS[selectedPersonaId];
+        // If a role is selected, keep the income from the role, otherwise use persona default
+        const defaultIncome = currentRole
+            ? (incomeMode === 'base' ? currentRole.base_salary : currentRole.ote)
+            : (selectedPersonaId === 'dink' ? 180000 : selectedPersonaId === 'working_parents' ? 140000 : 85000); // Fallbacks if needed
+
         let newProfile: FinancialProfile = { ...profile };
 
         switch (selectedPersonaId) {
             case 'solo_climber':
-                newProfile = { grossIncome: 85000, retirementContribution: 4000, monthlyDebts: { carPayment: 400, studentLoans: 350, creditCards: 150, childCare: 0 }, assets: { savings: 15000 } };
+                newProfile = {
+                    grossIncome: currentRole ? newProfile.grossIncome : 85000,
+                    retirementContribution: 4000,
+                    monthlyDebts: { carPayment: 400, studentLoans: 350, creditCards: 150, childCare: 0 },
+                    assets: { savings: 15000 }
+                };
                 break;
             case 'dink':
-                newProfile = { grossIncome: 180000, retirementContribution: 15000, monthlyDebts: { carPayment: 1200, studentLoans: 800, creditCards: 500, childCare: 0 }, assets: { savings: 60000 } };
+                newProfile = {
+                    grossIncome: currentRole ? newProfile.grossIncome : 180000,
+                    retirementContribution: 15000,
+                    monthlyDebts: { carPayment: 1200, studentLoans: 800, creditCards: 500, childCare: 0 },
+                    assets: { savings: 60000 }
+                };
                 break;
             case 'working_parents':
-                newProfile = { grossIncome: 140000, retirementContribution: 8000, monthlyDebts: { carPayment: 600, studentLoans: 400, creditCards: 200, childCare: 2500 }, assets: { savings: 30000 } };
+                newProfile = {
+                    grossIncome: currentRole ? newProfile.grossIncome : 140000,
+                    retirementContribution: 8000,
+                    monthlyDebts: { carPayment: 600, studentLoans: 400, creditCards: 200, childCare: 2500 },
+                    assets: { savings: 30000 }
+                };
                 break;
             case 'school_age_family':
-                newProfile = { grossIncome: 160000, retirementContribution: 12000, monthlyDebts: { carPayment: 800, studentLoans: 0, creditCards: 300, childCare: 0 }, assets: { savings: 80000 } };
+                newProfile = {
+                    grossIncome: currentRole ? newProfile.grossIncome : 160000,
+                    retirementContribution: 12000,
+                    monthlyDebts: { carPayment: 800, studentLoans: 0, creditCards: 300, childCare: 0 },
+                    assets: { savings: 80000 }
+                };
                 break;
             case 'single_income_family':
-                newProfile = { grossIncome: 95000, retirementContribution: 5000, monthlyDebts: { carPayment: 350, studentLoans: 0, creditCards: 100, childCare: 0 }, assets: { savings: 25000 } };
+                newProfile = {
+                    grossIncome: currentRole ? newProfile.grossIncome : 95000,
+                    retirementContribution: 5000,
+                    monthlyDebts: { carPayment: 350, studentLoans: 0, creditCards: 100, childCare: 0 },
+                    assets: { savings: 25000 }
+                };
                 break;
         }
         setProfile(newProfile);
@@ -125,16 +173,23 @@ export default function DemographicInvestigator() {
         [profile, persona]
     );
 
-    const buyingPower = useMemo(() =>
-        calculateRealBuyingPower(
+    const buyingPower = useMemo(() => {
+        const bankDebts =
+            profile.monthlyDebts.carPayment +
+            profile.monthlyDebts.studentLoans +
+            profile.monthlyDebts.creditCards;
+
+        const lifestyleExpenses = profile.monthlyDebts.childCare;
+
+        return calculateRealBuyingPower(
             discretionary.discretionaryMonthly,
             profile.grossIncome,
-            discretionary.totalMonthlyDebt,
+            bankDebts,
+            lifestyleExpenses,
             0.0615, // Rate
             profile.assets.savings
-        ),
-        [discretionary, profile]
-    );
+        );
+    }, [discretionary, profile]);
 
     return (
         <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
@@ -162,6 +217,68 @@ export default function DemographicInvestigator() {
                                 onClick={() => setSelectedPersonaId(p.id as PersonaId)}
                             />
                         ))}
+                    </div>
+
+
+
+                    {/* Company & Role Selector */}
+                    <div className="bg-white/5 rounded-xl p-6 border border-white/10 backdrop-blur-sm">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Company Context</h3>
+                            <Building2 size={14} className="text-gray-600" />
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs text-gray-500 mb-1 block">Company</label>
+                                <select
+                                    value={selectedCompany}
+                                    onChange={(e) => {
+                                        setSelectedCompany(e.target.value);
+                                        setSelectedRole(''); // Reset role when company changes
+                                    }}
+                                    className="w-full bg-black/20 border border-white/5 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-blue-500/50"
+                                >
+                                    <option value="">Select Company...</option>
+                                    {companies.map(c => (
+                                        <option key={c.name} value={c.name}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {selectedCompany && (
+                                <div>
+                                    <label className="text-xs text-gray-500 mb-1 block">Role</label>
+                                    <select
+                                        value={selectedRole}
+                                        onChange={(e) => setSelectedRole(e.target.value)}
+                                        className="w-full bg-black/20 border border-white/5 rounded-lg py-2 px-3 text-sm text-white focus:outline-none focus:border-blue-500/50"
+                                    >
+                                        <option value="">Select Role...</option>
+                                        {currentCompany?.roles.map(r => (
+                                            <option key={r.title} value={r.title}>{r.title}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            {selectedRole && (
+                                <div className="flex gap-2 bg-black/20 p-1 rounded-lg">
+                                    <button
+                                        onClick={() => setIncomeMode('base')}
+                                        className={`flex-1 py-1 text-xs font-medium rounded ${incomeMode === 'base' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500 hover:text-white'}`}
+                                    >
+                                        Base Salary
+                                    </button>
+                                    <button
+                                        onClick={() => setIncomeMode('ote')}
+                                        className={`flex-1 py-1 text-xs font-medium rounded ${incomeMode === 'ote' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500 hover:text-white'}`}
+                                    >
+                                        OTE
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Financial Controls */}
@@ -254,15 +371,15 @@ export default function DemographicInvestigator() {
 
                         {/* Lifestyle Reality */}
                         <div className={`rounded-2xl p-8 border relative overflow-hidden transition-colors duration-500 ${buyingPower.lifestyleHealth === 'Healthy' ? 'bg-emerald-900/20 border-emerald-500/30' :
-                                buyingPower.lifestyleHealth === 'Stretch' ? 'bg-yellow-900/20 border-yellow-500/30' :
-                                    'bg-rose-900/20 border-rose-500/30'
+                            buyingPower.lifestyleHealth === 'Stretch' ? 'bg-yellow-900/20 border-yellow-500/30' :
+                                'bg-rose-900/20 border-rose-500/30'
                             }`}>
                             <h3 className="text-sm font-medium text-gray-400 mb-1">Lifestyle Reality</h3>
 
                             <div className="flex items-baseline gap-2 mb-2">
                                 <div className={`text-5xl font-bold tracking-tight ${buyingPower.lifestyleHealth === 'Healthy' ? 'text-emerald-400' :
-                                        buyingPower.lifestyleHealth === 'Stretch' ? 'text-yellow-400' :
-                                            'text-rose-400'
+                                    buyingPower.lifestyleHealth === 'Stretch' ? 'text-yellow-400' :
+                                        'text-rose-400'
                                     }`}>
                                     {buyingPower.monthlySurplus > 0 ? '+' : ''}${Math.round(buyingPower.monthlySurplus).toLocaleString()}
                                 </div>
@@ -270,8 +387,8 @@ export default function DemographicInvestigator() {
                             </div>
 
                             <p className={`text-sm font-medium flex items-center gap-2 ${buyingPower.lifestyleHealth === 'Healthy' ? 'text-emerald-300' :
-                                    buyingPower.lifestyleHealth === 'Stretch' ? 'text-yellow-300' :
-                                        'text-rose-300'
+                                buyingPower.lifestyleHealth === 'Stretch' ? 'text-yellow-300' :
+                                    'text-rose-300'
                                 }`}>
                                 {buyingPower.lifestyleHealth === 'Healthy' && <CheckCircle size={16} />}
                                 {buyingPower.lifestyleHealth === 'Stretch' && <AlertTriangle size={16} />}
@@ -350,8 +467,8 @@ export default function DemographicInvestigator() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {/* Apartments */}
                         <div className={`p-4 rounded-lg border flex flex-col items-center gap-2 transition-colors ${buyingPower.maxMonthlyPayment >= PRODUCTS.apartments.range[0]
-                                ? 'bg-emerald-500/10 border-emerald-500/30'
-                                : 'bg-rose-500/10 border-rose-500/30'
+                            ? 'bg-emerald-500/10 border-emerald-500/30'
+                            : 'bg-rose-500/10 border-rose-500/30'
                             }`}>
                             {buyingPower.maxMonthlyPayment >= PRODUCTS.apartments.range[0] ? <Unlock size={20} className="text-emerald-400" /> : <Lock size={20} className="text-rose-400" />}
                             <span className="text-sm font-medium text-gray-300">Apartments</span>
@@ -359,8 +476,8 @@ export default function DemographicInvestigator() {
 
                         {/* Condos */}
                         <div className={`p-4 rounded-lg border flex flex-col items-center gap-2 transition-colors ${buyingPower.maxPrice >= PRODUCTS.condos.range[0]
-                                ? 'bg-emerald-500/10 border-emerald-500/30'
-                                : 'bg-rose-500/10 border-rose-500/30'
+                            ? 'bg-emerald-500/10 border-emerald-500/30'
+                            : 'bg-rose-500/10 border-rose-500/30'
                             }`}>
                             {buyingPower.maxPrice >= PRODUCTS.condos.range[0] ? <Unlock size={20} className="text-emerald-400" /> : <Lock size={20} className="text-rose-400" />}
                             <span className="text-sm font-medium text-gray-300">Condos</span>
@@ -368,8 +485,8 @@ export default function DemographicInvestigator() {
 
                         {/* Black Ridge */}
                         <div className={`p-4 rounded-lg border flex flex-col items-center gap-2 transition-colors ${buyingPower.maxPrice >= PRODUCTS.blackridge.range[0]
-                                ? 'bg-emerald-500/10 border-emerald-500/30'
-                                : 'bg-rose-500/10 border-rose-500/30'
+                            ? 'bg-emerald-500/10 border-emerald-500/30'
+                            : 'bg-rose-500/10 border-rose-500/30'
                             }`}>
                             {buyingPower.maxPrice >= PRODUCTS.blackridge.range[0] ? <Unlock size={20} className="text-emerald-400" /> : <Lock size={20} className="text-rose-400" />}
                             <span className="text-sm font-medium text-gray-300">Black Ridge</span>
@@ -377,8 +494,8 @@ export default function DemographicInvestigator() {
 
                         {/* Townhouses */}
                         <div className={`p-4 rounded-lg border flex flex-col items-center gap-2 transition-colors ${buyingPower.maxPrice >= PRODUCTS.townhouses.range[0]
-                                ? 'bg-emerald-500/10 border-emerald-500/30'
-                                : 'bg-rose-500/10 border-rose-500/30'
+                            ? 'bg-emerald-500/10 border-emerald-500/30'
+                            : 'bg-rose-500/10 border-rose-500/30'
                             }`}>
                             {buyingPower.maxPrice >= PRODUCTS.townhouses.range[0] ? <Unlock size={20} className="text-emerald-400" /> : <Lock size={20} className="text-rose-400" />}
                             <span className="text-sm font-medium text-gray-300">Townhouses</span>
@@ -387,6 +504,6 @@ export default function DemographicInvestigator() {
 
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

@@ -127,18 +127,20 @@ export function calculateDiscretionaryIncome(
 export function calculateRealBuyingPower(
     discretionaryMonthly: number,
     grossIncome: number,
-    monthlyDebt: number, // Excluding housing
+    bankDebts: number, // Debts that count against DTI (Car, Student Loans, CC)
+    lifestyleExpenses: number, // Expenses that affect budget but NOT DTI (Childcare)
     interestRate: number,
     downPayment: number
 ) {
     // 1. Bank Qualification (The Hard Limit)
     // Banks typically allow up to 43-50% DTI (Debt-to-Income)
-    // Housing Payment + Other Debts <= Gross Monthly * DTI_LIMIT
+    // Housing Payment + Bank Debts <= Gross Monthly * DTI_LIMIT
+    // CRITICAL: Childcare is NOT a bank debt for DTI purposes
     const monthlyGross = grossIncome / 12;
     const dtiLimit = CONSTANTS.DTI_LIMIT;
 
     // Max housing payment allowed by bank (PITI + HOA)
-    const maxHousingPayment = Math.max(0, (monthlyGross * dtiLimit) - monthlyDebt);
+    const maxHousingPayment = Math.max(0, (monthlyGross * dtiLimit) - bankDebts);
 
     // Calculate Max Price based on this payment
     const monthlyRate = interestRate / 12;
@@ -161,6 +163,7 @@ export function calculateRealBuyingPower(
     // 2. Lifestyle Reality (The Soft Limit)
     // If they bought at maxPrice, what is left?
     // Surplus = Discretionary (Net - Debts) - Housing Cost
+    // Note: Discretionary already includes deduction of ALL debts (bank + lifestyle)
     const projectedHousingCost = maxHousingPayment;
     const monthlySurplus = discretionaryMonthly - projectedHousingCost;
 
