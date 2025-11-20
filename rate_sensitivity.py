@@ -357,6 +357,61 @@ def summarize_demand_by_product(
     return demand_df
 
 
+def compute_techridge_demand(
+    companies: List[Dict],
+    years: List[int],
+    scenarios: List[str],
+    affordability_lookup: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Aggregate demand across all companies to get Techridge-wide
+    demand by product for each year, scenario, and rate.
+    """
+    per_company_results = []
+
+    for company in companies:
+        for year in years:
+            for scen in scenarios:
+                hh_bands = compute_household_band_counts(company, year, scen)
+                if hh_bands.empty:
+                    continue
+                demand = summarize_demand_by_product(hh_bands, affordability_lookup)
+                per_company_results.append(demand)
+
+    if not per_company_results:
+        return pd.DataFrame()
+
+    combined = pd.concat(per_company_results, ignore_index=True)
+
+    # Aggregate over companies to get Techridge-wide totals
+    group_cols = ["year", "scenario", "rate_label", "rate"]
+    agg_cols = [
+        "total_households",
+        "Apartments",
+        "Condos",
+        "Blackridge",
+        "Townhouse",
+    ]
+
+    techridge = (
+        combined.groupby(group_cols, as_index=False)[agg_cols].sum().sort_values(
+            group_cols
+        )
+    )
+
+    # Recompute percentages at Techridge level
+    for _, row in techridge.iterrows():
+        total_hh = row["total_households"]
+        if total_hh <= 0:
+            continue
+    for product in ["Apartments", "Condos", "Blackridge", "Townhouse"]:
+        techridge[f"{product}_pct"] = (
+            techridge[product] / techridge["total_households"] * 100.0
+        ).round(1)
+
+    return techridge
+
+
 def demo_busybusy_pipeline():
     """
     Run the new pipeline for busybusy / AlignOps as a concrete example:
@@ -508,11 +563,103 @@ def generate_test_outputs():
     print(f"\nTest outputs written to {output_dir}/")
 
 
+def load_supply(filepath: str = "data/supply.json") -> Dict:
+    """
+    Load simple supply configuration from JSON.
+    Expected shape:
+    {
+      "products": [
+        {"name": "Apartments", "units": 200, "first_delivery_year": 2028},
+        ...
+      ]
+    }
+    """
+    with open(filepath, "r") as f:
+        return json.load(f)
+
+
+def compute_supply_by_year(
+    supply_cfg: Dict, years: List[int]
+) -> pd.DataFrame:
+    """
+    For each product and year, compute available supply (cumulative units
+    from first_delivery_year onwards).
+    """
+    rows = []
+    products = supply_cfg.get("products", [])
+
+    for product in products:
+        name = product["name"]
+        units = product["units"]
+        first_year = product["first_delivery_year"]
+
+        for year in years:
+            available = units if year >= first_year else 0
+            rows.append(
+                {
+                    "product": name,
+                    "year": year,
+                    "supply_units": available,
+                }
+            )
+
+    return pd.DataFrame(rows)
+
+
+def build_techridge_overview_json(
+    years: List[int],
+    scenarios: List[str],
+    supply_path: str = "data/supply.json",
+) -> Dict:
+    """
+    High-level entry point to generate Techridge-wide demand vs supply
+    for use by the frontend.
+
+    Returns a JSON-serializable dict with:
+    - demand_by_product: Techridge-wide demand per year/scenario/rate
+    - supply_by_product: supply units per product and year
+    """
+    companies = load_companies_from_dir("data")
+    if not companies:
+        raise RuntimeError("No companies found in data directory")
+
+    affordability_lookup = build_affordability_lookup()
+    techridge_demand_df = compute_techridge_demand(
+        companies, years, scenarios, affordability_lookup
+    )
+
+    supply_cfg = load_supply(supply_path)
+    supply_df = compute_supply_by_year(supply_cfg, years)
+
+    # Pivot supply so each product is a column for easier merging on frontend
+    supply_pivot = supply_df.pivot_table(
+        index="year", columns="product", values="supply_units", aggfunc="sum"
+    ).reset_index()
+
+    # Convert demand and supply to JSON-serializable structures
+    demand_records = techridge_demand_df.to_dict(orient="records")
+    supply_records = supply_pivot.to_dict(orient="records")
+
+    return {
+        "years": years,
+        "scenarios": scenarios,
+        "demand_by_product": demand_records,
+        "supply_by_product": supply_records,
+    }
+
+
 if __name__ == "__main__":
     import sys
 
     if len(sys.argv) > 1 and sys.argv[1] == "test":
         generate_test_outputs()
+    elif len(sys.argv) > 1 and sys.argv[1] == "overview":
+        # Example: python rate_sensitivity.py overview
+        overview = build_techridge_overview_json(
+            years=[2025, 2026, 2027, 2028, 2029],
+            scenarios=["QI_base", "QI_full"],
+        )
+        print(json.dumps(overview, indent=2))
     else:
         demo_busybusy_pipeline()
 
