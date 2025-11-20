@@ -1,100 +1,130 @@
 'use client';
 
 /**
- * GlobalDock - Fixed bottom controller for rate, year, and scenario
+ * GlobalDock - The "Command Center" for the application
+ * Floating glass dock with rate dial, scenario toggle, and year selector.
  */
 
 import { useAffordability } from '@/context/AffordabilityContext';
 import { formatPercentage } from '@/lib/model';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Settings2, TrendingUp, Calendar, DollarSign, Percent } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function GlobalDock() {
   const {
     rate,
     year,
     scenario,
-    useLiveFHA,
     setRate,
     setYear,
     setScenario,
-    setUseLiveFHA,
     availableYears,
-    liveFHARate,
   } = useAffordability();
 
-  return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-      <div className="bg-space-900/95 backdrop-blur-lg border border-space-700 rounded-2xl shadow-2xl px-6 py-4">
-        <div className="flex items-center gap-8">
-          {/* Rate Slider */}
-          <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-space-300">Interest Rate</label>
-            <input
-              type="range"
-              min="0.04"
-              max="0.08"
-              step="0.0025"
-              value={rate}
-              onChange={(e) => setRate(parseFloat(e.target.value))}
-              className="w-48 h-2 bg-space-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-            />
-            <span className="font-mono text-lg font-bold text-white min-w-[4rem]">
-              {formatPercentage(rate * 100, 2)}
-            </span>
+  // Local state for "Ripple" effect visual feedback
+  const [isInteracting, setIsInteracting] = useState(false);
 
-            {/* Live FHA Toggle */}
-            {liveFHARate && (
-              <button
-                onClick={() => setUseLiveFHA(!useLiveFHA)}
-                className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                  useLiveFHA
-                    ? 'bg-cyan-500 text-white'
-                    : 'bg-space-800 text-space-300 hover:bg-space-700'
-                }`}
+  return (
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-3xl px-4"
+    >
+      <div className="relative group">
+        {/* Glass Container */}
+        <div className="absolute inset-0 bg-space-900/80 backdrop-blur-xl rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]" />
+        
+        {/* Content */}
+        <div className="relative flex items-center justify-between px-8 py-4 gap-8">
+          
+          {/* 1. Rate Control (The "Dial") */}
+          <div className="flex flex-col gap-2 min-w-[240px]">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2 text-xs font-medium text-space-400 uppercase tracking-wider">
+                <Percent size={12} />
+                <span>Interest Rate</span>
+              </div>
+              <motion.span 
+                key={rate}
+                initial={{ scale: 1.2, color: '#fff' }}
+                animate={{ scale: 1, color: '#fff' }}
+                className="font-mono text-lg font-bold text-white"
               >
-                {useLiveFHA ? 'Live FHA' : 'Use Live FHA'}
-              </button>
-            )}
+                {formatPercentage(rate * 100, 2)}
+              </motion.span>
+            </div>
+            
+            <div className="relative h-6 flex items-center">
+              <input
+                type="range"
+                min="0.04"
+                max="0.08"
+                step="0.00125"
+                value={rate}
+                onChange={(e) => {
+                  setRate(parseFloat(e.target.value));
+                  setIsInteracting(true);
+                }}
+                onMouseUp={() => setIsInteracting(false)}
+                onTouchEnd={() => setIsInteracting(false)}
+                className="w-full h-1.5 bg-space-700 rounded-lg appearance-none cursor-pointer accent-product-apt hover:accent-product-condo transition-all"
+              />
+            </div>
           </div>
 
-          {/* Scenario Toggle */}
-          <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-space-300">Income</label>
-            <div className="flex bg-space-800 rounded-lg p-1">
+          {/* Divider */}
+          <div className="w-px h-10 bg-white/10" />
+
+          {/* 2. Scenario Toggle */}
+          <div className="flex flex-col gap-2">
+             <div className="flex items-center gap-2 text-xs font-medium text-space-400 uppercase tracking-wider">
+                <DollarSign size={12} />
+                <span>Income Basis</span>
+              </div>
+            <div className="flex bg-space-800/50 rounded-lg p-1 border border-white/5">
               <button
                 onClick={() => setScenario('base')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
                   scenario === 'base'
-                    ? 'bg-violet-500 text-white'
-                    : 'text-space-300 hover:text-white'
+                    ? 'bg-white/10 text-white shadow-sm border border-white/10'
+                    : 'text-space-400 hover:text-white'
                 }`}
               >
-                Base Only
+                Base Salary
               </button>
               <button
                 onClick={() => setScenario('full')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all duration-200 ${
                   scenario === 'full'
-                    ? 'bg-violet-500 text-white'
-                    : 'text-space-300 hover:text-white'
+                    ? 'bg-product-condo/20 text-product-condo shadow-sm border border-product-condo/20'
+                    : 'text-space-400 hover:text-white'
                 }`}
               >
-                Base + Bonus
+                Full OTE
               </button>
             </div>
           </div>
 
-          {/* Year Selector */}
-          <div className="flex items-center gap-3">
-            <label className="text-sm font-medium text-space-300">Year</label>
-            <div className="flex gap-2">
+          {/* Divider */}
+          <div className="w-px h-10 bg-white/10" />
+
+          {/* 3. Year Selector */}
+          <div className="flex flex-col gap-2">
+             <div className="flex items-center gap-2 text-xs font-medium text-space-400 uppercase tracking-wider">
+                <Calendar size={12} />
+                <span>Projection</span>
+              </div>
+            <div className="flex gap-1">
               {availableYears.map((y) => (
                 <button
                   key={y}
                   onClick={() => setYear(y)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-md text-xs font-mono transition-all duration-200 ${
                     year === y
-                      ? 'bg-amber-500 text-white'
-                      : 'bg-space-800 text-space-300 hover:bg-space-700'
+                      ? 'bg-product-blackridge/20 text-product-blackridge border border-product-blackridge/20'
+                      : 'text-space-500 hover:text-space-300 hover:bg-white/5'
                   }`}
                 >
                   {y}
@@ -102,8 +132,10 @@ export default function GlobalDock() {
               ))}
             </div>
           </div>
+
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
+
