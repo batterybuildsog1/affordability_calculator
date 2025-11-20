@@ -7,7 +7,7 @@
 // TYPES & INTERFACES
 // ============================================
 
-export type IncomeBand = 'B1' | 'B2' | 'B3' | 'B4' | 'B5' | 'B6' | 'B7';
+// Removed duplicate type definition
 export type HouseholdType = 'H1_single' | 'H2_dual_moderate' | 'H3_dual_peer';
 export type ProductType = 'apartments' | 'condos' | 'blackridge' | 'townhouses';
 export type IncomeScenario = 'base' | 'full';
@@ -82,15 +82,42 @@ export const CONSTANTS = {
   INCOME_GROWTH_RATE: 0.04, // 4% annual growth
 } as const;
 
-// Income bands (B1-B7)
-export const INCOME_BANDS: Record<IncomeBand, [number, number]> = {
-  B1: [35000, 60000],
-  B2: [60000, 80000],
-  B3: [80000, 110000],
-  B4: [110000, 150000],
-  B5: [150000, 200000],
-  B6: [200000, 300000],
-  B7: [300000, Infinity],
+// Granular Income Bands ($10k increments)
+export const INCOME_BANDS = [
+  'B_30K', 'B_40K', 'B_50K', 'B_60K', 'B_70K', 'B_80K', 'B_90K',
+  'B_100K', 'B_110K', 'B_120K', 'B_130K', 'B_140K', 'B_150K',
+  'B_160K', 'B_170K', 'B_180K', 'B_190K', 'B_200K', 'B_225K',
+  'B_250K', 'B_300K', 'B_350K', 'B_400K_PLUS'
+] as const;
+
+export type IncomeBand = typeof INCOME_BANDS[number];
+
+export const BAND_RANGES: Record<IncomeBand, { min: number; max: number; label: string }> = {
+  'B_30K': { min: 0, max: 39999, label: '< $40k' },
+  'B_40K': { min: 40000, max: 49999, label: '$40k - $50k' },
+  'B_50K': { min: 50000, max: 59999, label: '$50k - $60k' },
+  'B_60K': { min: 60000, max: 69999, label: '$60k - $70k' },
+  'B_70K': { min: 70000, max: 79999, label: '$70k - $80k' },
+  'B_80K': { min: 80000, max: 89999, label: '$80k - $90k' },
+  'B_90K': { min: 90000, max: 99999, label: '$90k - $100k' },
+  'B_100K': { min: 100000, max: 109999, label: '$100k - $110k' },
+  'B_110K': { min: 110000, max: 119999, label: '$110k - $120k' },
+  'B_120K': { min: 120000, max: 129999, label: '$120k - $130k' },
+  'B_130K': { min: 130000, max: 139999, label: '$130k - $140k' },
+  'B_140K': { min: 140000, max: 149999, label: '$140k - $150k' },
+  'B_150K': { min: 150000, max: 159999, label: '$150k - $160k' },
+  'B_160K': {
+    min: 160000, max: 169999, label: '$160k - $170k'
+  },
+  'B_170K': { min: 170000, max: 179999, label: '$170k - $180k' },
+  'B_180K': { min: 180000, max: 189999, label: '$180k - $190k' },
+  'B_190K': { min: 190000, max: 199999, label: '$190k - $200k' },
+  'B_200K': { min: 200000, max: 224999, label: '$200k - $225k' },
+  'B_225K': { min: 225000, max: 249999, label: '$225k - $250k' },
+  'B_250K': { min: 250000, max: 299999, label: '$250k - $300k' },
+  'B_300K': { min: 300000, max: 349999, label: '$300k - $350k' },
+  'B_350K': { min: 350000, max: 399999, label: '$350k - $400k' },
+  'B_400K_PLUS': { min: 400000, max: Infinity, label: '$400k+' },
 };
 
 // Household type multipliers
@@ -218,7 +245,7 @@ export function calculateAffordability(
   }
 
   // Townhouse threshold - only from B6/B7 income bands
-  if (maxPrice >= PRODUCTS.townhouses.range[0] && annualIncome >= INCOME_BANDS.B6[0]) {
+  if (maxPrice >= PRODUCTS.townhouses.range[0] && annualIncome >= BAND_RANGES['B_200K'].min) {
     affordableProducts.push('townhouses');
   }
 
@@ -229,43 +256,32 @@ export function calculateAffordability(
   };
 }
 
-/**
- * Assign an income to a band
- */
-export function assignIncomeBand(annualIncome: number): IncomeBand {
-  const bands: IncomeBand[] = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
-
-  for (const band of bands) {
-    const [min, max] = INCOME_BANDS[band];
-    if (annualIncome >= min && annualIncome < max) {
+// Helper to get band for a given income
+export function getIncomeBand(income: number): IncomeBand {
+  for (const band of INCOME_BANDS) {
+    const range = BAND_RANGES[band];
+    if (income >= range.min && income <= range.max) {
       return band;
     }
   }
-
-  return 'B7'; // Default to highest band
+  return 'B_400K_PLUS';
 }
 
-/**
- * Apply income growth for projection years
- */
-export function applyIncomeGrowth(baseIncome: number, yearsAfterBase: number): number {
-  return Math.round(baseIncome * Math.pow(1 + CONSTANTS.INCOME_GROWTH_RATE, yearsAfterBase));
+// Helper to get mid-point of a band
+export function getBandMidpoint(band: IncomeBand): number {
+  const range = BAND_RANGES[band];
+  if (range.max === Infinity) return range.min;
+  return (range.min + range.max) / 2;
+}
+
+// Helper to apply growth rate
+export function applyIncomeGrowth(income: number, years: number): number {
+  return income * Math.pow(1 + CONSTANTS.INCOME_GROWTH_RATE, years);
 }
 
 // ============================================
 // BAND-BASED AFFORDABILITY
 // ============================================
-
-/**
- * Get representative income for a band (midpoint)
- */
-export function getRepresentativeIncome(band: IncomeBand): number {
-  const [min, max] = INCOME_BANDS[band];
-  if (max === Infinity) {
-    return min + 100000; // Use min + 100k for top band
-  }
-  return Math.floor((min + max) / 2);
-}
 
 /**
  * Build affordability lookup table for all income bands at given rates
@@ -274,11 +290,11 @@ export function buildAffordabilityLookup(
   rateScenarios: number[] = [CONSTANTS.FHA_RATE, CONSTANTS.CONV_RATE, 0.055, 0.045]
 ): Record<string, BandAffordability> {
   const lookup: Record<string, BandAffordability> = {};
-  const bands: IncomeBand[] = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
+  const bands: readonly IncomeBand[] = INCOME_BANDS; // Use the new INCOME_BANDS
 
   for (const band of bands) {
     for (const rate of rateScenarios) {
-      const income = getRepresentativeIncome(band);
+      const income = getBandMidpoint(band); // Use the new getBandMidpoint
       const { maxPrice, affordableProducts } = calculateAffordability(income, rate);
 
       const key = `${band}_${(rate * 100).toFixed(2)}`;
@@ -310,9 +326,10 @@ export function computeHouseholdBandCounts(
   const yearsAfterBase = targetYear - company.base_year;
 
   // Initialize band counts
-  const bandCounts: Record<IncomeBand, number> = {
-    B1: 0, B2: 0, B3: 0, B4: 0, B5: 0, B6: 0, B7: 0
-  };
+  const bandCounts: Record<string, number> = {};
+  for (const band of INCOME_BANDS) {
+    bandCounts[band] = 0;
+  }
 
   // Calculate scaling factor for target year
   let scaleFactor = 1.0;
@@ -338,21 +355,21 @@ export function computeHouseholdBandCounts(
 
     // H1 - Single income
     const h1Income = projectedIncome * HOUSEHOLD_MULTIPLIERS.H1_single;
-    const h1Band = assignIncomeBand(h1Income);
-    bandCounts[h1Band] += scaledCount * H1_single;
+    const h1Band = getIncomeBand(h1Income);
+    bandCounts[h1Band] = (bandCounts[h1Band] || 0) + (scaledCount * H1_single);
 
     // H2 - Dual moderate
     const h2Income = projectedIncome * HOUSEHOLD_MULTIPLIERS.H2_dual_moderate;
-    const h2Band = assignIncomeBand(h2Income);
-    bandCounts[h2Band] += scaledCount * H2_dual_moderate;
+    const h2Band = getIncomeBand(h2Income);
+    bandCounts[h2Band] = (bandCounts[h2Band] || 0) + (scaledCount * H2_dual_moderate);
 
     // H3 - Dual peer
     const h3Income = projectedIncome * HOUSEHOLD_MULTIPLIERS.H3_dual_peer;
-    const h3Band = assignIncomeBand(h3Income);
-    bandCounts[h3Band] += scaledCount * H3_dual_peer;
+    const h3Band = getIncomeBand(h3Income);
+    bandCounts[h3Band] = (bandCounts[h3Band] || 0) + (scaledCount * H3_dual_peer);
   }
 
-  return bandCounts;
+  return bandCounts as Record<IncomeBand, number>;
 }
 
 /**
@@ -371,10 +388,9 @@ export function summarizeDemandByProduct(
   };
 
   let totalHouseholds = 0;
-  const bands: IncomeBand[] = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
 
-  for (const band of bands) {
-    const count = householdBandCounts[band];
+  for (const band of INCOME_BANDS) {
+    const count = householdBandCounts[band] || 0;
     totalHouseholds += count;
 
     const key = `${band}_${(rate * 100).toFixed(2)}`;
