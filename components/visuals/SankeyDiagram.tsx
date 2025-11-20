@@ -7,7 +7,7 @@
 
 import { useMemo } from 'react';
 import { ResponsiveContainer, Sankey, Tooltip, Layer, Rectangle } from 'recharts';
-import { Company, IncomeScenario, computeHouseholdBandCounts, buildAffordabilityLookup, CONSTANTS, ProductType } from '@/lib/model';
+import { Company, IncomeScenario, computeHouseholdBandCounts, buildAffordabilityLookup, CONSTANTS, ProductType, INCOME_BANDS } from '@/lib/model';
 import { useAffordability } from '@/context/AffordabilityContext';
 
 interface SankeyDiagramProps {
@@ -67,7 +67,7 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
         });
 
         // Add Band Nodes
-        const bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'];
+        const bands = INCOME_BANDS;
         bands.forEach(b => {
             nodes.push({ name: b, color: '#94a3b8' }); // Slate-400
             bandIndices[b] = nodeIndex++;
