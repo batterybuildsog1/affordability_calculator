@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackClientApp } from "../stack/client";
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AffordabilityProvider } from '@/context/AffordabilityContext';
@@ -18,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className}><StackProvider app={stackClientApp}><StackTheme>
         <AffordabilityProvider>
           <div className="min-h-screen pb-32">
             {/* Navigation */}
@@ -63,7 +65,7 @@ export default function RootLayout({
             <GlobalDock />
           </div>
         </AffordabilityProvider>
-      </body>
+      </StackTheme></StackProvider></body>
     </html>
   );
 }
