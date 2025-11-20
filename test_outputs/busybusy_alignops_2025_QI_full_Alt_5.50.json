@@ -1,0 +1,117 @@
+{
+  "company": "busybusy / AlignOps",
+  "year": 2025,
+  "scenario": "QI_full",
+  "rate": 0.055,
+  "rate_label": "Alt_5.50",
+  "household_band_counts": {
+    "B2": 22.799999999999997,
+    "B3": 8.8,
+    "B4": 20.4,
+    "B5": 8.4,
+    "B6": 16.2,
+    "B7": 8.4
+  },
+  "affordability_lookup": [
+    {
+      "income_band": "B1",
+      "rep_income": 47500.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 274919.7331113089,
+      "reachable_products": []
+    },
+    {
+      "income_band": "B2",
+      "rep_income": 70000.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 405144.8698482447,
+      "reachable_products": [
+        "Apartments"
+      ]
+    },
+    {
+      "income_band": "B3",
+      "rep_income": 95000.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 549839.4662226178,
+      "reachable_products": [
+        "Apartments",
+        "Condos"
+      ]
+    },
+    {
+      "income_band": "B4",
+      "rep_income": 130000.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 797859.1500087396,
+      "reachable_products": [
+        "Apartments",
+        "Condos",
+        "Blackridge"
+      ]
+    },
+    {
+      "income_band": "B5",
+      "rep_income": 175000.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 1074041.1634733034,
+      "reachable_products": [
+        "Apartments",
+        "Condos",
+        "Blackridge"
+      ]
+    },
+    {
+      "income_band": "B6",
+      "rep_income": 250000.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 1534344.5192475761,
+      "reachable_products": [
+        "Apartments",
+        "Condos",
+        "Blackridge",
+        "Townhouse"
+      ]
+    },
+    {
+      "income_band": "B7",
+      "rep_income": 330000.0,
+      "rate_label": "Alt_5.50",
+      "rate": 0.055,
+      "max_price": 2025334.7654068004,
+      "reachable_products": [
+        "Apartments",
+        "Condos",
+        "Blackridge",
+        "Townhouse"
+      ]
+    }
+  ],
+  "demand_summary": {
+    "total_households": 85.0,
+    "products": {
+      "Apartments": {
+        "count": 85.0,
+        "percentage": 100.0
+      },
+      "Condos": {
+        "count": 62.199999999999996,
+        "percentage": 73.2
+      },
+      "Blackridge": {
+        "count": 53.4,
+        "percentage": 62.8
+      },
+      "Townhouse": {
+        "count": 24.6,
+        "percentage": 28.9
+      }
+    }
+  }
+}

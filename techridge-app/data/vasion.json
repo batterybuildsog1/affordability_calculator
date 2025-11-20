@@ -1,0 +1,72 @@
+{
+  "name": "Vasion",
+  "base_year": 2025,
+  "employee_count": 135,
+  "roles": [
+    {
+      "title": "Support / Product Support",
+      "count": 33,
+      "base_salary": 52000,
+      "ote": 58000,
+      "is_entry_level": true,
+      "segment_type": "support",
+      "household_split": {
+        "H1_single": 0.6,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Sales & BD",
+      "count": 34,
+      "base_salary": 65000,
+      "ote": 120000,
+      "is_entry_level": false,
+      "segment_type": "sales_ae",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Engineering",
+      "count": 41,
+      "base_salary": 115000,
+      "ote": 130000,
+      "is_entry_level": false,
+      "segment_type": "eng",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Product / BI / Pro",
+      "count": 20,
+      "base_salary": 90000,
+      "ote": 105000,
+      "is_entry_level": false,
+      "segment_type": "pro",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Management & Exec",
+      "count": 7,
+      "base_salary": 180000,
+      "ote": 230000,
+      "is_entry_level": false,
+      "segment_type": "management_exec",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.4
+      }
+    }
+  ]
+}

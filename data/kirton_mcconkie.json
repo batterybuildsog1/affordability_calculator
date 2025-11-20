@@ -1,0 +1,64 @@
+{
+  "name": "Kirton McConkie",
+  "base_year": 2025,
+  "employee_count": 25,
+  "projection_years": [
+    { "year": 2027, "employee_count": 50 }
+  ],
+  "roles": [
+    {
+      "title": "Legal Assistants / Admin",
+      "count": 6,
+      "base_salary": 48000,
+      "ote": 55000,
+      "is_entry_level": true,
+      "segment_type": "entry_support",
+      "household_split": {
+        "H1_single": 0.6,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Paralegals",
+      "count": 6,
+      "base_salary": 65000,
+      "ote": 75000,
+      "is_entry_level": false,
+      "segment_type": "mid_ops",
+      "household_split": {
+        "H1_single": 0.5,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.2
+      }
+    },
+    {
+      "title": "Associates",
+      "count": 9,
+      "base_salary": 145000,
+      "ote": 165000,
+      "is_entry_level": false,
+      "segment_type": "professional",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Partners / Senior Counsel",
+      "count": 4,
+      "base_salary": 260000,
+      "ote": 340000,
+      "is_entry_level": false,
+      "segment_type": "management_exec",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.4
+      }
+    }
+  ]
+}
+
+

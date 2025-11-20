@@ -1,0 +1,52 @@
+{
+  "name": "Eaglegate Title",
+  "base_year": 2025,
+  "employee_count": 15,
+  "projection_years": [
+    { "year": 2025, "employee_count": 15 },
+    { "year": 2027, "employee_count": 20 }
+  ],
+  "roles": [
+    {
+      "title": "Assistants / Processors",
+      "count": 7,
+      "base_salary": 47000,
+      "ote": 52000,
+      "is_entry_level": true,
+      "segment_type": "entry_support",
+      "household_split": {
+        "H1_single": 0.6,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Escrow / Title Officers",
+      "count": 6,
+      "base_salary": 70000,
+      "ote": 85000,
+      "is_entry_level": false,
+      "segment_type": "mid_ops",
+      "household_split": {
+        "H1_single": 0.5,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.2
+      }
+    },
+    {
+      "title": "Management / Counsel",
+      "count": 2,
+      "base_salary": 115000,
+      "ote": 145000,
+      "is_entry_level": false,
+      "segment_type": "management_exec",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.4
+      }
+    }
+  ]
+}
+
+

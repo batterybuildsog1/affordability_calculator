@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@layer base {
+  body {
+    @apply bg-space-950 text-space-100 antialiased;
+  }
+
+  * {
+    @apply border-space-700;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-space-900/80 backdrop-blur-lg border border-space-700;
+  }
+
+  .glass-hover {
+    @apply hover:bg-space-800/80 transition-all duration-200;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-space-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-space-700 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-space-600;
+}

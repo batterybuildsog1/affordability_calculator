@@ -1,0 +1,66 @@
+{
+  "name": "Primestin Care",
+  "base_year": 2025,
+  "employee_count": 15,
+  "projection_years": [
+    { "year": 2025, "employee_count": 15 },
+    { "year": 2026, "employee_count": 30 },
+    { "year": 2027, "employee_count": 50 }
+  ],
+  "roles": [
+    {
+      "title": "Entry CS / Clinical Support",
+      "count": 9,
+      "base_salary": 42000,
+      "ote": 45000,
+      "is_entry_level": true,
+      "segment_type": "entry_support",
+      "household_split": {
+        "H1_single": 0.6,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Mid Ops / Clinical Lead",
+      "count": 4,
+      "base_salary": 65000,
+      "ote": 80000,
+      "is_entry_level": false,
+      "segment_type": "mid_ops",
+      "household_split": {
+        "H1_single": 0.5,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.2
+      }
+    },
+    {
+      "title": "Technical / Specialist",
+      "count": 1,
+      "base_salary": 90000,
+      "ote": 110000,
+      "is_entry_level": false,
+      "segment_type": "tech_product",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Executive / Senior Leadership",
+      "count": 1,
+      "base_salary": 160000,
+      "ote": 220000,
+      "is_entry_level": false,
+      "segment_type": "management_exec",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.4
+      }
+    }
+  ]
+}
+
+

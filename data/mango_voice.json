@@ -1,0 +1,61 @@
+{
+  "name": "Mango Voice",
+  "base_year": 2025,
+  "employee_count": 40,
+  "roles": [
+    {
+      "title": "Entry Sales / Support",
+      "count": 18,
+      "base_salary": 45000,
+      "ote": 58000,
+      "is_entry_level": true,
+      "segment_type": "entry_support_sales",
+      "household_split": {
+        "H1_single": 0.6,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Account Executives",
+      "count": 10,
+      "base_salary": 55000,
+      "ote": 110000,
+      "is_entry_level": false,
+      "segment_type": "sales_ae",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Technical (Dev / VoIP Eng)",
+      "count": 8,
+      "base_salary": 90000,
+      "ote": 105000,
+      "is_entry_level": false,
+      "segment_type": "eng",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Leadership",
+      "count": 4,
+      "base_salary": 140000,
+      "ote": 200000,
+      "is_entry_level": false,
+      "segment_type": "management_exec",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.4
+      }
+    }
+  ]
+}
+
+

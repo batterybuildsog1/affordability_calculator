@@ -1,0 +1,22 @@
+{
+  "name": "Brodie Industries",
+  "base_year": 2025,
+  "employee_count": 2,
+  "roles": [
+    {
+      "title": "Principal / Specialist",
+      "count": 2,
+      "base_salary": 140000,
+      "ote": 200000,
+      "is_entry_level": false,
+      "segment_type": "management_exec",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.4
+      }
+    }
+  ]
+}
+
+
