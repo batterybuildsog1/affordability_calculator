@@ -11,20 +11,6 @@ if (!process.env.DATABASE_URL) {
 // Create the SQL client
 export const sql = neon(process.env.DATABASE_URL);
 
-// Helper function to safely execute queries
-export async function executeQuery<T = any>(
-  query: string,
-  params?: any[]
-): Promise<T> {
-  try {
-    const result = await sql(query, params);
-    return result as T;
-  } catch (error) {
-    console.error('Database query error:', error);
-    throw error;
-  }
-}
-
 // Database helper functions
 export const db = {
   /**
