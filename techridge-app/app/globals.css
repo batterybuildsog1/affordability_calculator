@@ -1,9 +1,27 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@theme {
+  /* Space color palette (dark theme) */
+  --color-space-950: #0a0a0f;
+  --color-space-900: #141420;
+  --color-space-800: #1e1e2e;
+  --color-space-700: #2a2a3e;
+  --color-space-600: #3a3a4e;
+  --color-space-500: #4a4a5e;
+  --color-space-400: #6a6a7e;
+  --color-space-300: #8a8a9e;
+  --color-space-200: #aaaaae;
+  --color-space-100: #cacacf;
+
+  /* Product colors */
+  --color-product-apt: #06b6d4;
+  --color-product-condo: #8b5cf6;
+  --color-product-blackridge: #f59e0b;
+  --color-product-townhouse: #10b981;
+}
 
 @layer base {
   body {
