@@ -1,41 +1,42 @@
 {
   "name": "HFB Technologies",
   "base_year": 2025,
-  "employee_count": 45,
-  "roles": [
+  "employee_count": 40,
+  "projection_years": [
     {
-      "title": "Account / Strategy / Marketing",
-      "count": 18,
-      "base_salary": 65000,
-      "ote": 75000,
-      "is_entry_level": false,
-      "segment_type": "account_strategy",
-      "household_split": {
-        "H1_single": 0.5,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.2
-      }
+      "year": 2025,
+      "employee_count": 40
     },
     {
-      "title": "Developers",
-      "count": 12,
-      "base_salary": 90000,
-      "ote": 105000,
+      "year": 2026,
+      "employee_count": 45
+    },
+    {
+      "year": 2027,
+      "employee_count": 50
+    }
+  ],
+  "roles": [
+    {
+      "title": "Front End Developer",
+      "count": 8,
+      "base_salary": 75000,
+      "ote": 85000,
       "is_entry_level": false,
       "segment_type": "eng",
       "household_split": {
         "H1_single": 0.4,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.3
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.2
       }
     },
     {
-      "title": "Design / Creative",
-      "count": 10,
-      "base_salary": 60000,
-      "ote": 70000,
+      "title": "NOC/Field Technician",
+      "count": 8,
+      "base_salary": 65000,
+      "ote": 75000,
       "is_entry_level": false,
-      "segment_type": "design",
+      "segment_type": "service_technician",
       "household_split": {
         "H1_single": 0.5,
         "H2_dual_moderate": 0.3,
@@ -43,19 +44,56 @@
       }
     },
     {
-      "title": "Leadership / Biz Dev",
+      "title": "Account Manager",
       "count": 5,
-      "base_salary": 120000,
-      "ote": 170000,
+      "base_salary": 60000,
+      "ote": 70000,
+      "is_entry_level": false,
+      "segment_type": "sales",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Sales Executive",
+      "count": 4,
+      "base_salary": 80000,
+      "ote": 150000,
+      "is_entry_level": false,
+      "segment_type": "sales",
+      "household_split": {
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.5
+      }
+    },
+    {
+      "title": "Admin/Support",
+      "count": 5,
+      "base_salary": 50000,
+      "ote": 55000,
+      "is_entry_level": true,
+      "segment_type": "support",
+      "household_split": {
+        "H1_single": 0.5,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Management",
+      "count": 10,
+      "base_salary": 100000,
+      "ote": 130000,
       "is_entry_level": false,
       "segment_type": "management_exec",
       "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.4,
         "H3_dual_peer": 0.4
       }
     }
   ]
 }
-
-

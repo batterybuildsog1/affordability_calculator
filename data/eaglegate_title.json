@@ -1,52 +1,59 @@
 {
-  "name": "Eaglegate Title",
+  "name": "Eagle Gate Title",
   "base_year": 2025,
-  "employee_count": 15,
-  "projection_years": [
-    { "year": 2025, "employee_count": 15 },
-    { "year": 2027, "employee_count": 20 }
-  ],
+  "employee_count": 30,
   "roles": [
     {
-      "title": "Assistants / Processors",
-      "count": 7,
-      "base_salary": 47000,
-      "ote": 52000,
+      "title": "Title Assistant / Support",
+      "count": 10,
+      "base_salary": 38000,
+      "ote": 42000,
       "is_entry_level": true,
-      "segment_type": "entry_support",
+      "segment_type": "support",
       "household_split": {
-        "H1_single": 0.6,
-        "H2_dual_moderate": 0.3,
+        "H1_single": 0.7,
+        "H2_dual_moderate": 0.2,
         "H3_dual_peer": 0.1
       }
     },
     {
-      "title": "Escrow / Title Officers",
-      "count": 6,
-      "base_salary": 70000,
-      "ote": 85000,
+      "title": "Title Agent",
+      "count": 10,
+      "base_salary": 55000,
+      "ote": 65000,
       "is_entry_level": false,
-      "segment_type": "mid_ops",
+      "segment_type": "ops",
       "household_split": {
         "H1_single": 0.5,
-        "H2_dual_moderate": 0.3,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Escrow Officer",
+      "count": 7,
+      "base_salary": 65000,
+      "ote": 90000,
+      "is_entry_level": false,
+      "segment_type": "ops",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.5,
         "H3_dual_peer": 0.2
       }
     },
     {
-      "title": "Management / Counsel",
-      "count": 2,
-      "base_salary": 115000,
-      "ote": 145000,
+      "title": "Branch Manager / Lead",
+      "count": 3,
+      "base_salary": 95000,
+      "ote": 120000,
       "is_entry_level": false,
-      "segment_type": "management_exec",
+      "segment_type": "management",
       "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.4
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.5,
+        "H3_dual_peer": 0.3
       }
     }
   ]
 }
-
-

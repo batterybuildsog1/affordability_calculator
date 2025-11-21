@@ -1,15 +1,15 @@
 {
   "name": "Mango Voice",
   "base_year": 2025,
-  "employee_count": 40,
+  "employee_count": 60,
   "roles": [
     {
-      "title": "Entry Sales / Support",
-      "count": 18,
+      "title": "Support / Admin",
+      "count": 15,
       "base_salary": 45000,
-      "ote": 58000,
+      "ote": 50000,
       "is_entry_level": true,
-      "segment_type": "entry_support_sales",
+      "segment_type": "support",
       "household_split": {
         "H1_single": 0.6,
         "H2_dual_moderate": 0.3,
@@ -17,23 +17,36 @@
       }
     },
     {
-      "title": "Account Executives",
+      "title": "Sales Development (SDR)",
+      "count": 15,
+      "base_salary": 45000,
+      "ote": 75000,
+      "is_entry_level": true,
+      "segment_type": "sales_sdr",
+      "household_split": {
+        "H1_single": 0.6,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Account Executive",
       "count": 10,
-      "base_salary": 55000,
+      "base_salary": 65000,
       "ote": 110000,
       "is_entry_level": false,
       "segment_type": "sales_ae",
       "household_split": {
         "H1_single": 0.4,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.3
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.2
       }
     },
     {
-      "title": "Technical (Dev / VoIP Eng)",
-      "count": 8,
+      "title": "Software Engineer / VoIP",
+      "count": 15,
       "base_salary": 90000,
-      "ote": 105000,
+      "ote": 115000,
       "is_entry_level": false,
       "segment_type": "eng",
       "household_split": {
@@ -43,19 +56,17 @@
       }
     },
     {
-      "title": "Leadership",
-      "count": 4,
-      "base_salary": 140000,
-      "ote": 200000,
+      "title": "Management",
+      "count": 5,
+      "base_salary": 120000,
+      "ote": 150000,
       "is_entry_level": false,
-      "segment_type": "management_exec",
+      "segment_type": "management",
       "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.4,
         "H3_dual_peer": 0.4
       }
     }
   ]
 }
-
-

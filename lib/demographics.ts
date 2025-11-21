@@ -28,6 +28,14 @@ export interface FinancialProfile {
     };
 }
 
+export interface LivingExpenses {
+    groceries: number;
+    utilities: number;
+    transportation: number; // Gas/Insurance (excluding car payment)
+    misc: number; // Phone, Internet, Subscriptions
+    total: number;
+}
+
 export const TAX_CONSTANTS = {
     UTAH_FLAT_RATE: 0.0455, // Updated to 4.55% (2024)
     FICA_RATE: 0.0765,
@@ -236,3 +244,51 @@ export const PERSONA_PRESETS: Record<string, Persona> = {
         lifestyleTier: 'frugal'
     }
 };
+
+export function estimateLivingExpenses(persona: Persona): LivingExpenses {
+    // Base costs per month (Utah estimates)
+    const COSTS = {
+        groceries: {
+            frugal: 300,
+            standard: 400,
+            high_spender: 600
+        },
+        utilities: {
+            base: 150,
+            per_person: 40
+        },
+        transportation: { // Gas & Insurance per car
+            frugal: 150,
+            standard: 200,
+            high_spender: 300
+        },
+        misc: { // Phone, Internet, Subs per adult
+            frugal: 80,
+            standard: 120,
+            high_spender: 200
+        }
+    };
+
+    const adultCount = persona.filingStatus === 'married_joint' ? 2 : 1;
+    const totalPeople = adultCount + persona.children;
+
+    // Groceries
+    const groceries = COSTS.groceries[persona.lifestyleTier] * totalPeople;
+
+    // Utilities (Base + per person)
+    const utilities = COSTS.utilities.base + (COSTS.utilities.per_person * totalPeople);
+
+    // Transportation (Gas/Ins)
+    const transportation = COSTS.transportation[persona.lifestyleTier] * persona.cars;
+
+    // Misc (Phone/Internet/Subs) - mostly adult driven but some household
+    const misc = COSTS.misc[persona.lifestyleTier] * adultCount;
+
+    return {
+        groceries,
+        utilities,
+        transportation,
+        misc,
+        total: groceries + utilities + transportation + misc
+    };
+}

@@ -1,39 +1,60 @@
-/**
- * FHA Rate API Endpoint
- * Returns the latest FHA 30-year rate
- * Phase 1: Returns static fallback (6.15%)
- * Phase 2: Will fetch from external source and cache in Neon
- */
-
 import { NextResponse } from 'next/server';
-import { CONSTANTS } from '@/lib/model';
+import * as cheerio from 'cheerio';
+import { unstable_cache } from 'next/cache';
+
+// Cached function to fetch and scrape the rate
+const getFHARate = unstable_cache(
+  async () => {
+    try {
+      console.log('Fetching FHA rate from Mortgage News Daily...');
+      const response = await fetch('https://www.mortgagenewsdaily.com/mortgage-rates/30-year-fha', {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch page: ${response.status}`);
+      }
+
+      const html = await response.text();
+      const $ = cheerio.load(html);
+
+      // Find the first rate cell in the table
+      // Structure: <tr><td class="rate-date">...</td><td class="rate">5.98%</td>...</tr>
+      const rateText = $('td.rate').first().text().trim();
+
+      if (!rateText) {
+        throw new Error('Could not find rate element');
+      }
+
+      // Parse "5.98%" -> 0.0598
+      const rateValue = parseFloat(rateText.replace('%', ''));
+
+      if (isNaN(rateValue)) {
+        throw new Error(`Failed to parse rate: ${rateText}`);
+      }
+
+      return rateValue / 100;
+    } catch (error) {
+      console.error('Error scraping FHA rate:', error);
+      return null;
+    }
+  },
+  ['fha-rate'], // Cache key
+  { revalidate: 86400 } // 24 hours
+);
 
 export async function GET() {
-  try {
-    // Phase 1: Return static rate
-    // TODO Phase 2: Check Neon database for today's rate
-    // TODO Phase 2: If not found, fetch from external source (MND) and store
+  const rate = await getFHARate();
 
-    const rateData = {
-      rate: CONSTANTS.FHA_RATE,
-      date: new Date().toISOString().split('T')[0],
-      source: 'static',
-      message: 'Using static FHA rate. Connect to Neon database to enable live rates.',
-    };
-
-    return NextResponse.json(rateData);
-  } catch (error) {
-    console.error('Error fetching FHA rate:', error);
-
-    // Fallback to static rate on error
-    return NextResponse.json(
-      {
-        rate: CONSTANTS.FHA_RATE,
-        date: new Date().toISOString().split('T')[0],
-        source: 'fallback',
-        error: 'Failed to fetch live rate, using fallback',
-      },
-      { status: 200 }
-    );
+  if (rate === null) {
+    return NextResponse.json({ error: 'Failed to fetch rate' }, { status: 500 });
   }
+
+  return NextResponse.json({
+    rate,
+    source: 'Mortgage News Daily',
+    timestamp: new Date().toISOString()
+  });
 }

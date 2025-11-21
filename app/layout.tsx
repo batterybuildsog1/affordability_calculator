@@ -39,18 +39,7 @@ export default function RootLayout({
                     >
                       Overview
                     </a>
-                    <a
-                      href="/bands"
-                      className="px-4 py-2 rounded-lg text-sm font-medium text-space-300 hover:text-white hover:bg-space-800 transition-colors"
-                    >
-                      Income Bands
-                    </a>
-                    <a
-                      href="/assumptions"
-                      className="px-4 py-2 rounded-lg text-sm font-medium text-space-300 hover:text-white hover:bg-space-800 transition-colors"
-                    >
-                      Assumptions
-                    </a>
+
                   </div>
                 </div>
               </div>

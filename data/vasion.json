@@ -5,7 +5,7 @@
   "roles": [
     {
       "title": "Support / Product Support",
-      "count": 33,
+      "count": 30,
       "base_salary": 52000,
       "ote": 58000,
       "is_entry_level": true,
@@ -17,10 +17,23 @@
       }
     },
     {
-      "title": "Sales & BD",
-      "count": 34,
-      "base_salary": 65000,
-      "ote": 120000,
+      "title": "Sales Development (BDR)",
+      "count": 15,
+      "base_salary": 55000,
+      "ote": 75000,
+      "is_entry_level": true,
+      "segment_type": "sales_bdr",
+      "household_split": {
+        "H1_single": 0.7,
+        "H2_dual_moderate": 0.2,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Account Executive",
+      "count": 20,
+      "base_salary": 85000,
+      "ote": 145000,
       "is_entry_level": false,
       "segment_type": "sales_ae",
       "household_split": {
@@ -30,10 +43,10 @@
       }
     },
     {
-      "title": "Engineering",
-      "count": 41,
-      "base_salary": 115000,
-      "ote": 130000,
+      "title": "Software Engineer",
+      "count": 35,
+      "base_salary": 125000,
+      "ote": 140000,
       "is_entry_level": false,
       "segment_type": "eng",
       "household_split": {
@@ -43,10 +56,23 @@
       }
     },
     {
+      "title": "Security & Senior Eng",
+      "count": 10,
+      "base_salary": 135000,
+      "ote": 155000,
+      "is_entry_level": false,
+      "segment_type": "senior_eng",
+      "household_split": {
+        "H1_single": 0.35,
+        "H2_dual_moderate": 0.3,
+        "H3_dual_peer": 0.35
+      }
+    },
+    {
       "title": "Product / BI / Pro",
-      "count": 20,
-      "base_salary": 90000,
-      "ote": 105000,
+      "count": 15,
+      "base_salary": 95000,
+      "ote": 110000,
       "is_entry_level": false,
       "segment_type": "pro",
       "household_split": {
@@ -57,7 +83,7 @@
     },
     {
       "title": "Management & Exec",
-      "count": 7,
+      "count": 10,
       "base_salary": 180000,
       "ote": 230000,
       "is_entry_level": false,

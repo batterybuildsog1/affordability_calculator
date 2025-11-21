@@ -1,0 +1,85 @@
+{
+    "name": "BusyBusy",
+    "base_year": 2025,
+    "employee_count": 85,
+    "roles": [
+        {
+            "title": "Business Development (BDR)",
+            "count": 15,
+            "base_salary": 50000,
+            "ote": 68000,
+            "is_entry_level": true,
+            "segment_type": "sales_bdr",
+            "household_split": {
+                "H1_single": 0.7,
+                "H2_dual_moderate": 0.2,
+                "H3_dual_peer": 0.1
+            }
+        },
+        {
+            "title": "Client Success Manager",
+            "count": 15,
+            "base_salary": 58000,
+            "ote": 100000,
+            "is_entry_level": false,
+            "segment_type": "cs",
+            "household_split": {
+                "H1_single": 0.5,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.2
+            }
+        },
+        {
+            "title": "Account Executive",
+            "count": 15,
+            "base_salary": 60000,
+            "ote": 125000,
+            "is_entry_level": false,
+            "segment_type": "sales_ae",
+            "household_split": {
+                "H1_single": 0.4,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.3
+            }
+        },
+        {
+            "title": "Software Engineer",
+            "count": 25,
+            "base_salary": 110000,
+            "ote": 125000,
+            "is_entry_level": false,
+            "segment_type": "eng",
+            "household_split": {
+                "H1_single": 0.4,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.3
+            }
+        },
+        {
+            "title": "Marketing & Admin",
+            "count": 8,
+            "base_salary": 65000,
+            "ote": 75000,
+            "is_entry_level": false,
+            "segment_type": "marketing",
+            "household_split": {
+                "H1_single": 0.5,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.2
+            }
+        },
+        {
+            "title": "Leadership",
+            "count": 7,
+            "base_salary": 180000,
+            "ote": 220000,
+            "is_entry_level": false,
+            "segment_type": "management_exec",
+            "household_split": {
+                "H1_single": 0.3,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.4
+            }
+        }
+    ]
+}

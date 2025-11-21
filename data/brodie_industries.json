@@ -1,22 +1,59 @@
 {
   "name": "Brodie Industries",
   "base_year": 2025,
-  "employee_count": 2,
+  "employee_count": 25,
   "roles": [
     {
-      "title": "Principal / Specialist",
-      "count": 2,
-      "base_salary": 140000,
-      "ote": 200000,
+      "title": "Composite Technician",
+      "count": 10,
+      "base_salary": 42000,
+      "ote": 48000,
+      "is_entry_level": true,
+      "segment_type": "technician",
+      "household_split": {
+        "H1_single": 0.7,
+        "H2_dual_moderate": 0.2,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "CNC Machinist",
+      "count": 5,
+      "base_salary": 55000,
+      "ote": 65000,
+      "is_entry_level": false,
+      "segment_type": "technician",
+      "household_split": {
+        "H1_single": 0.5,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Design Engineer",
+      "count": 5,
+      "base_salary": 85000,
+      "ote": 100000,
+      "is_entry_level": false,
+      "segment_type": "eng",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.2
+      }
+    },
+    {
+      "title": "Principal / Management",
+      "count": 5,
+      "base_salary": 120000,
+      "ote": 150000,
       "is_entry_level": false,
       "segment_type": "management_exec",
       "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.4,
         "H3_dual_peer": 0.4
       }
     }
   ]
 }
-
-

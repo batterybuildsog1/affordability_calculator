@@ -1,19 +1,41 @@
 {
   "name": "DigiVoice",
   "base_year": 2025,
-  "employee_count": 5,
-  "projection_years": [
-    { "year": 2025, "employee_count": 5 },
-    { "year": 2027, "employee_count": 10 }
-  ],
+  "employee_count": 45,
   "roles": [
     {
-      "title": "Entry Sales / Support",
-      "count": 2,
+      "title": "Support Rep / Onboarding",
+      "count": 15,
       "base_salary": 42000,
-      "ote": 55000,
+      "ote": 48000,
       "is_entry_level": true,
-      "segment_type": "entry_support_sales",
+      "segment_type": "support",
+      "household_split": {
+        "H1_single": 0.7,
+        "H2_dual_moderate": 0.2,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Customer Success Manager",
+      "count": 10,
+      "base_salary": 55000,
+      "ote": 70000,
+      "is_entry_level": false,
+      "segment_type": "support",
+      "household_split": {
+        "H1_single": 0.5,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.1
+      }
+    },
+    {
+      "title": "Sales Rep (Commission)",
+      "count": 10,
+      "base_salary": 40000,
+      "ote": 85000,
+      "is_entry_level": true,
+      "segment_type": "sales_sdr",
       "household_split": {
         "H1_single": 0.6,
         "H2_dual_moderate": 0.3,
@@ -21,23 +43,10 @@
       }
     },
     {
-      "title": "Account Executive",
-      "count": 1,
-      "base_salary": 52000,
-      "ote": 100000,
-      "is_entry_level": false,
-      "segment_type": "sales_ae",
-      "household_split": {
-        "H1_single": 0.4,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.3
-      }
-    },
-    {
-      "title": "Technical (Dev / VoIP Eng)",
-      "count": 1,
-      "base_salary": 85000,
-      "ote": 100000,
+      "title": "VoIP / Software Developer",
+      "count": 5,
+      "base_salary": 95000,
+      "ote": 110000,
       "is_entry_level": false,
       "segment_type": "eng",
       "household_split": {
@@ -47,19 +56,17 @@
       }
     },
     {
-      "title": "Leadership",
-      "count": 1,
-      "base_salary": 130000,
-      "ote": 180000,
+      "title": "Management & Ops",
+      "count": 5,
+      "base_salary": 100000,
+      "ote": 130000,
       "is_entry_level": false,
-      "segment_type": "management_exec",
+      "segment_type": "management",
       "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.4
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.5,
+        "H3_dual_peer": 0.3
       }
     }
   ]
 }
-
-

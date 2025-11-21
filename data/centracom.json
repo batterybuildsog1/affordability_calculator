@@ -1,15 +1,29 @@
 {
   "name": "CentraCom",
   "base_year": 2025,
-  "employee_count": 15,
+  "employee_count": 50,
+  "projection_years": [
+    {
+      "year": 2025,
+      "employee_count": 50
+    },
+    {
+      "year": 2026,
+      "employee_count": 55
+    },
+    {
+      "year": 2027,
+      "employee_count": 60
+    }
+  ],
   "roles": [
     {
-      "title": "Field Techs / Installers",
-      "count": 5,
-      "base_salary": 55000,
-      "ote": 60000,
-      "is_entry_level": false,
-      "segment_type": "field_tech",
+      "title": "Fiber/Combo Technician",
+      "count": 20,
+      "base_salary": 45000,
+      "ote": 50000,
+      "is_entry_level": true,
+      "segment_type": "service_technician",
       "household_split": {
         "H1_single": 0.5,
         "H2_dual_moderate": 0.3,
@@ -17,12 +31,38 @@
       }
     },
     {
-      "title": "Customer Service / Sales",
-      "count": 6,
-      "base_salary": 45000,
+      "title": "IT Technician",
+      "count": 5,
+      "base_salary": 55000,
       "ote": 60000,
+      "is_entry_level": false,
+      "segment_type": "eng",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.2
+      }
+    },
+    {
+      "title": "Account Executive",
+      "count": 5,
+      "base_salary": 50000,
+      "ote": 80000,
+      "is_entry_level": false,
+      "segment_type": "sales",
+      "household_split": {
+        "H1_single": 0.3,
+        "H2_dual_moderate": 0.4,
+        "H3_dual_peer": 0.3
+      }
+    },
+    {
+      "title": "Customer Support",
+      "count": 10,
+      "base_salary": 38000,
+      "ote": 42000,
       "is_entry_level": true,
-      "segment_type": "entry_support_sales",
+      "segment_type": "support",
       "household_split": {
         "H1_single": 0.6,
         "H2_dual_moderate": 0.3,
@@ -30,32 +70,17 @@
       }
     },
     {
-      "title": "Network / Engineering",
-      "count": 3,
+      "title": "Management & Ops",
+      "count": 10,
       "base_salary": 90000,
-      "ote": 105000,
-      "is_entry_level": false,
-      "segment_type": "eng",
-      "household_split": {
-        "H1_single": 0.4,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.3
-      }
-    },
-    {
-      "title": "Management",
-      "count": 1,
-      "base_salary": 120000,
-      "ote": 160000,
+      "ote": 110000,
       "is_entry_level": false,
       "segment_type": "management_exec",
       "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
+        "H1_single": 0.2,
+        "H2_dual_moderate": 0.4,
         "H3_dual_peer": 0.4
       }
     }
   ]
 }
-
-

@@ -4,10 +4,10 @@
   "employee_count": 101,
   "roles": [
     {
-      "title": "Support / Admin / Tax",
-      "count": 45,
-      "base_salary": 46000,
-      "ote": 48000,
+      "title": "Support / Admin / Ops",
+      "count": 40,
+      "base_salary": 48000,
+      "ote": 52000,
       "is_entry_level": true,
       "segment_type": "support",
       "household_split": {
@@ -17,12 +17,12 @@
       }
     },
     {
-      "title": "Customer Success",
-      "count": 20,
-      "base_salary": 65000,
-      "ote": 75000,
+      "title": "Marketing & Content",
+      "count": 10,
+      "base_salary": 75000,
+      "ote": 85000,
       "is_entry_level": false,
-      "segment_type": "cs",
+      "segment_type": "marketing",
       "household_split": {
         "H1_single": 0.5,
         "H2_dual_moderate": 0.3,
@@ -30,10 +30,10 @@
       }
     },
     {
-      "title": "Product & Engineering",
-      "count": 25,
-      "base_salary": 90000,
-      "ote": 105000,
+      "title": "Software Engineer",
+      "count": 30,
+      "base_salary": 95000,
+      "ote": 115000,
       "is_entry_level": false,
       "segment_type": "eng",
       "household_split": {
@@ -43,10 +43,10 @@
       }
     },
     {
-      "title": "Senior Technical / Architect",
-      "count": 5,
-      "base_salary": 170000,
-      "ote": 190000,
+      "title": "Senior Data / Lead",
+      "count": 10,
+      "base_salary": 135000,
+      "ote": 155000,
       "is_entry_level": false,
       "segment_type": "senior_eng",
       "household_split": {
@@ -57,7 +57,7 @@
     },
     {
       "title": "Leadership",
-      "count": 6,
+      "count": 11,
       "base_salary": 200000,
       "ote": 250000,
       "is_entry_level": false,
@@ -70,5 +70,3 @@
     }
   ]
 }
-
-

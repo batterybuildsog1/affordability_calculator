@@ -1,64 +1,73 @@
 {
   "name": "Kirton McConkie",
   "base_year": 2025,
-  "employee_count": 25,
+  "employee_count": 30,
   "projection_years": [
-    { "year": 2027, "employee_count": 50 }
+    {
+      "year": 2025,
+      "employee_count": 30
+    },
+    {
+      "year": 2026,
+      "employee_count": 32
+    },
+    {
+      "year": 2027,
+      "employee_count": 35
+    }
   ],
   "roles": [
     {
-      "title": "Legal Assistants / Admin",
-      "count": 6,
-      "base_salary": 48000,
-      "ote": 55000,
-      "is_entry_level": true,
-      "segment_type": "entry_support",
+      "title": "Associate Attorney",
+      "count": 10,
+      "base_salary": 100000,
+      "ote": 125000,
+      "is_entry_level": false,
+      "segment_type": "legal",
       "household_split": {
-        "H1_single": 0.6,
+        "H1_single": 0.2,
         "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.1
+        "H3_dual_peer": 0.5
       }
     },
     {
-      "title": "Paralegals",
-      "count": 6,
-      "base_salary": 65000,
-      "ote": 75000,
+      "title": "Senior/Partner Attorney",
+      "count": 5,
+      "base_salary": 160000,
+      "ote": 220000,
       "is_entry_level": false,
-      "segment_type": "mid_ops",
+      "segment_type": "management_exec",
       "household_split": {
-        "H1_single": 0.5,
-        "H2_dual_moderate": 0.3,
+        "H1_single": 0.1,
+        "H2_dual_moderate": 0.2,
+        "H3_dual_peer": 0.7
+      }
+    },
+    {
+      "title": "Legal Assistant/Paralegal",
+      "count": 8,
+      "base_salary": 55000,
+      "ote": 65000,
+      "is_entry_level": false,
+      "segment_type": "support",
+      "household_split": {
+        "H1_single": 0.4,
+        "H2_dual_moderate": 0.4,
         "H3_dual_peer": 0.2
       }
     },
     {
-      "title": "Associates",
-      "count": 9,
-      "base_salary": 145000,
-      "ote": 165000,
-      "is_entry_level": false,
-      "segment_type": "professional",
+      "title": "Office Assistant/Runner",
+      "count": 7,
+      "base_salary": 35000,
+      "ote": 38000,
+      "is_entry_level": true,
+      "segment_type": "support",
       "household_split": {
-        "H1_single": 0.4,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.3
-      }
-    },
-    {
-      "title": "Partners / Senior Counsel",
-      "count": 4,
-      "base_salary": 260000,
-      "ote": 340000,
-      "is_entry_level": false,
-      "segment_type": "management_exec",
-      "household_split": {
-        "H1_single": 0.3,
-        "H2_dual_moderate": 0.3,
-        "H3_dual_peer": 0.4
+        "H1_single": 0.7,
+        "H2_dual_moderate": 0.2,
+        "H3_dual_peer": 0.1
       }
     }
   ]
 }
-
-

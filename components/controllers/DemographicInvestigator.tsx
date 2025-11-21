@@ -10,6 +10,7 @@ import {
     PERSONA_PRESETS,
     calculateDiscretionaryIncome,
     calculateRealBuyingPower,
+    estimateLivingExpenses,
     Persona,
     FinancialProfile
 } from '@/lib/demographics';
@@ -173,13 +174,17 @@ export default function DemographicInvestigator() {
         [profile, persona]
     );
 
+    const livingExpenses = useMemo(() => estimateLivingExpenses(persona), [persona]);
+
     const buyingPower = useMemo(() => {
         const bankDebts =
             profile.monthlyDebts.carPayment +
             profile.monthlyDebts.studentLoans +
             profile.monthlyDebts.creditCards;
 
-        const lifestyleExpenses = profile.monthlyDebts.childCare;
+        profile.monthlyDebts.creditCards;
+
+        const lifestyleExpenses = profile.monthlyDebts.childCare + livingExpenses.total;
 
         return calculateRealBuyingPower(
             discretionary.discretionaryMonthly,
@@ -460,6 +465,33 @@ export default function DemographicInvestigator() {
                             <span>0%</span>
                             <span>50%</span>
                             <span>100% of Gross Income</span>
+                        </div>
+                    </div>
+
+                    {/* Living Expenses Breakdown */}
+                    <div className="bg-white/5 rounded-xl p-6 border border-white/10 backdrop-blur-sm">
+                        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Estimated Living Costs</h3>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Groceries</span>
+                                <span className="text-white font-mono">${livingExpenses.groceries}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Utilities</span>
+                                <span className="text-white font-mono">${livingExpenses.utilities}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Gas/Ins</span>
+                                <span className="text-white font-mono">${livingExpenses.transportation}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400">Misc/Phone</span>
+                                <span className="text-white font-mono">${livingExpenses.misc}</span>
+                            </div>
+                            <div className="col-span-2 border-t border-white/10 pt-2 mt-2 flex justify-between font-medium">
+                                <span className="text-gray-300">Total Estimated</span>
+                                <span className="text-white font-mono">${livingExpenses.total}</span>
+                            </div>
                         </div>
                     </div>
 

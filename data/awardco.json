@@ -1,0 +1,85 @@
+{
+    "name": "Awardco",
+    "base_year": 2025,
+    "employee_count": 200,
+    "roles": [
+        {
+            "title": "Client Support / Ops",
+            "count": 40,
+            "base_salary": 48000,
+            "ote": 55000,
+            "is_entry_level": true,
+            "segment_type": "support",
+            "household_split": {
+                "H1_single": 0.6,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.1
+            }
+        },
+        {
+            "title": "Sales Development (SDR)",
+            "count": 30,
+            "base_salary": 45000,
+            "ote": 70000,
+            "is_entry_level": true,
+            "segment_type": "sales_sdr",
+            "household_split": {
+                "H1_single": 0.7,
+                "H2_dual_moderate": 0.2,
+                "H3_dual_peer": 0.1
+            }
+        },
+        {
+            "title": "Account Executive",
+            "count": 40,
+            "base_salary": 85000,
+            "ote": 140000,
+            "is_entry_level": false,
+            "segment_type": "sales_ae",
+            "household_split": {
+                "H1_single": 0.4,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.3
+            }
+        },
+        {
+            "title": "Software Engineer",
+            "count": 60,
+            "base_salary": 115000,
+            "ote": 135000,
+            "is_entry_level": false,
+            "segment_type": "eng",
+            "household_split": {
+                "H1_single": 0.4,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.3
+            }
+        },
+        {
+            "title": "Product & Design",
+            "count": 15,
+            "base_salary": 105000,
+            "ote": 120000,
+            "is_entry_level": false,
+            "segment_type": "product",
+            "household_split": {
+                "H1_single": 0.4,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.3
+            }
+        },
+        {
+            "title": "Management & Exec",
+            "count": 15,
+            "base_salary": 160000,
+            "ote": 210000,
+            "is_entry_level": false,
+            "segment_type": "management_exec",
+            "household_split": {
+                "H1_single": 0.2,
+                "H2_dual_moderate": 0.3,
+                "H3_dual_peer": 0.5
+            }
+        }
+    ]
+}
