@@ -63,41 +63,50 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
             '#6366f1', // Indigo
             '#84cc16', // Lime
             '#d946ef', // Fuchsia
+            '#14b8a6', // Teal
+            '#f97316', // Orange
+            '#64748b', // Slate
+            '#a855f7', // Purple
+            '#e11d48', // Rose
         ];
 
-        // 2. Create Nodes
-        // Structure: [Companies...] -> [Roles...] -> [Products...]
+        // 2. Define Income Bands
+        const bands = [
+            { label: '< $50k', min: 0, max: 50000 },
+            { label: '$50k - $60k', min: 50000, max: 60000 },
+            { label: '$60k - $70k', min: 60000, max: 70000 },
+            { label: '$70k - $80k', min: 70000, max: 80000 },
+            { label: '$80k - $90k', min: 80000, max: 90000 },
+            { label: '$90k - $100k', min: 90000, max: 100000 },
+            { label: '$100k - $110k', min: 100000, max: 110000 },
+            { label: '$110k - $120k', min: 110000, max: 120000 },
+            { label: '$120k - $130k', min: 120000, max: 130000 },
+            { label: '$130k - $140k', min: 130000, max: 140000 },
+            { label: '$140k - $150k', min: 140000, max: 150000 },
+            { label: '$150k - $200k', min: 150000, max: 200000 },
+            { label: '$200k - $250k', min: 200000, max: 250000 },
+            { label: '$250k+', min: 250000, max: Infinity },
+        ];
 
+        // 3. Create Nodes
         let nodeIndex = 0;
         const companyIndices: Record<string, number> = {};
-        const roleIndices: Record<string, number> = {}; // Key: "Company_Role"
+        const bandIndices: Record<string, number> = {};
         const productIndices: Record<string, number> = {};
 
-        // Add Company Nodes
+        // Level 0: Companies
         companies.forEach((c, i) => {
             nodes.push({ name: c.name, color: companyColors[i % companyColors.length] });
             companyIndices[c.name] = nodeIndex++;
         });
 
-        // Add Role Nodes (Grouped by Company visually, but we need unique nodes per company-role combo)
-        // Actually, to avoid too many nodes, maybe we just do Company -> Outcome directly?
-        // User asked for: "shows the purchasing power for the demographic groups of each company... Color code the company... so that employees from that company are categorized together"
-        // And "Label the outcome... explicitly"
-        // If we do Company -> Role -> Outcome, it might be very tall.
-        // But "demographic groups" implies Roles.
-        // Let's try Company -> Role -> Outcome.
-
-        companies.forEach((c, i) => {
-            const color = companyColors[i % companyColors.length];
-            c.roles.forEach(r => {
-                const key = `${c.name}_${r.title}`;
-                // Use a slightly lighter/darker shade or same color
-                nodes.push({ name: r.title, color: color });
-                roleIndices[key] = nodeIndex++;
-            });
+        // Level 1: Income Bands
+        bands.forEach(b => {
+            nodes.push({ name: b.label, color: '#64748b' }); // Neutral color for bands
+            bandIndices[b.label] = nodeIndex++;
         });
 
-        // Add Product Nodes
+        // Level 2: Products
         const products: { type: ProductType | 'gap'; color: string; label: string }[] = [
             { type: 'apartments', color: '#06b6d4', label: 'Apartment' },
             { type: 'condos', color: '#8b5cf6', label: 'Condo' },
@@ -111,12 +120,17 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
             productIndices[p.type] = nodeIndex++;
         });
 
-        // 3. Create Links
+        // 4. Calculate Links
+        // We need to aggregate flow from Company -> Band, and then Band -> Product
+        // Since Sankey requires flow conservation (in = out), we calculate everything first.
+
+        // Temporary storage for Band -> Product flows to aggregate them
+        // Map<BandLabel, Map<ProductType, Count>>
+        const bandToProductMap = new Map<string, Map<string, number>>();
+        bands.forEach(b => bandToProductMap.set(b.label, new Map()));
 
         companies.forEach(company => {
             const yearsAfterBase = year - company.base_year;
-
-            // Calculate scaling factor
             let scaleFactor = 1.0;
             if (company.projection_years && company.projection_years.length > 0) {
                 const baseYearProj = company.projection_years.find(p => p.year === company.base_year);
@@ -127,52 +141,83 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
             }
 
             company.roles.forEach(role => {
-                const roleKey = `${company.name}_${role.title}`;
                 const scaledCount = role.count * scaleFactor;
-
                 if (Math.round(scaledCount) < 1) return;
 
-                // Link: Company -> Role
-                links.push({
-                    source: companyIndices[company.name],
-                    target: roleIndices[roleKey],
-                    value: Math.round(scaledCount)
-                });
-
-                // Calculate Affordability for this Role
-                // We need to split by household type
                 const baseIncome = scenario === 'base' ? role.base_salary : role.ote;
                 const projectedIncome = applyIncomeGrowth(baseIncome, yearsAfterBase);
-
                 const { H1_single, H2_dual_moderate, H3_dual_peer } = role.household_split;
 
-                // Helper to add flow to product
-                const addFlow = (count: number, incomeMultiplier: number) => {
+                // Helper to process a household segment
+                const processSegment = (count: number, incomeMultiplier: number) => {
                     if (count < 1) return;
-                    const income = projectedIncome * incomeMultiplier;
-                    const { affordableProducts } = calculateAffordability(income, rate);
+                    const totalHouseholdIncome = projectedIncome * incomeMultiplier;
 
-                    // Determine highest affordable product
+                    // Find Band
+                    const band = bands.find(b => totalHouseholdIncome >= b.min && totalHouseholdIncome < b.max);
+                    if (!band) return; // Should not happen given $250k+ catch-all
+
+                    // Link: Company -> Band
+                    links.push({
+                        source: companyIndices[company.name],
+                        target: bandIndices[band.label],
+                        value: Math.round(count),
+                        // We can't easily color individual links in Recharts Sankey based on source without custom rendering,
+                        // but Recharts usually handles source-coloring by default or we can try to force it.
+                    });
+
+                    // Determine Product Affordability
+                    const { affordableProducts } = calculateAffordability(totalHouseholdIncome, rate);
                     let targetProduct: string = 'gap';
                     if (affordableProducts.includes('townhouses')) targetProduct = 'townhouses';
                     else if (affordableProducts.includes('blackridge')) targetProduct = 'blackridge';
                     else if (affordableProducts.includes('condos')) targetProduct = 'condos';
                     else if (affordableProducts.includes('apartments')) targetProduct = 'apartments';
 
-                    links.push({
-                        source: roleIndices[roleKey],
-                        target: productIndices[targetProduct],
-                        value: Math.round(count)
-                    });
+                    // Aggregate Band -> Product flow
+                    const productMap = bandToProductMap.get(band.label)!;
+                    const currentVal = productMap.get(targetProduct) || 0;
+                    productMap.set(targetProduct, currentVal + Math.round(count));
                 };
 
-                addFlow(scaledCount * H1_single, HOUSEHOLD_MULTIPLIERS.H1_single);
-                addFlow(scaledCount * H2_dual_moderate, HOUSEHOLD_MULTIPLIERS.H2_dual_moderate);
-                addFlow(scaledCount * H3_dual_peer, HOUSEHOLD_MULTIPLIERS.H3_dual_peer);
+                processSegment(scaledCount * H1_single, HOUSEHOLD_MULTIPLIERS.H1_single);
+                processSegment(scaledCount * H2_dual_moderate, HOUSEHOLD_MULTIPLIERS.H2_dual_moderate);
+                processSegment(scaledCount * H3_dual_peer, HOUSEHOLD_MULTIPLIERS.H3_dual_peer);
             });
         });
 
-        return { nodes, links };
+        // Consolidate Company -> Band links (Recharts might need unique links or it sums them up?
+        // Recharts Sankey usually sums multiple links between same nodes.
+        // But to be safe and cleaner, let's aggregate them ourselves.)
+        const aggregatedCompanyToBand = new Map<string, number>(); // Key: "CompIdx_BandIdx"
+        const finalLinks: any[] = [];
+
+        links.forEach(l => {
+            const key = `${l.source}_${l.target}`;
+            const current = aggregatedCompanyToBand.get(key) || 0;
+            aggregatedCompanyToBand.set(key, current + l.value);
+        });
+
+        aggregatedCompanyToBand.forEach((value, key) => {
+            const [source, target] = key.split('_').map(Number);
+            finalLinks.push({ source, target, value });
+        });
+
+        // Create Band -> Product links
+        bandToProductMap.forEach((productMap, bandLabel) => {
+            const bandIndex = bandIndices[bandLabel];
+            productMap.forEach((count, productType) => {
+                if (count > 0) {
+                    finalLinks.push({
+                        source: bandIndex,
+                        target: productIndices[productType],
+                        value: count
+                    });
+                }
+            });
+        });
+
+        return { nodes, links: finalLinks };
     }, [companies, rate, year, scenario]);
 
     if (data.nodes.length === 0) return null;
