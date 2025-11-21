@@ -72,26 +72,50 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
         const nodes: any[] = [];
         const links: any[] = [];
 
-        // 1. Define Company Colors
-        const companyColors = [
-            '#3b82f6', // Blue
-            '#10b981', // Emerald
-            '#f59e0b', // Amber
-            '#ef4444', // Red
-            '#8b5cf6', // Violet
-            '#ec4899', // Pink
-            '#06b6d4', // Cyan
-            '#6366f1', // Indigo
-            '#84cc16', // Lime
-            '#d946ef', // Fuchsia
-            '#14b8a6', // Teal
-            '#f97316', // Orange
-            '#64748b', // Slate
-            '#a855f7', // Purple
-            '#e11d48', // Rose
-        ];
+        // 1. Define Company Groups & Colors
+        const companyGroups: Record<string, { color: string; order: number }> = {
+            // Planstin Group (Emerald)
+            'Planstin': { color: '#10b981', order: 1 },
+            'Zion HealthShare': { color: '#10b981', order: 1 },
+            'Primestin Care': { color: '#10b981', order: 1 },
 
-        // 2. Define Income Bands
+            // Tech & Software (Blue)
+            'Zonos': { color: '#3b82f6', order: 2 },
+            'Vasion': { color: '#3b82f6', order: 2 },
+            'BusyBusy': { color: '#3b82f6', order: 2 },
+            'Awardco': { color: '#3b82f6', order: 2 },
+            'HFB Technologies': { color: '#3b82f6', order: 2 },
+
+            // Telecom & Connectivity (Cyan)
+            'Mango Voice': { color: '#06b6d4', order: 3 },
+            'DigiVoice': { color: '#06b6d4', order: 3 },
+            'CentraCom': { color: '#06b6d4', order: 3 },
+
+            // Aerospace & Manufacturing (Orange)
+            'Intergalactic': { color: '#f97316', order: 4 },
+            'Brodie Industries': { color: '#f97316', order: 4 },
+
+            // Professional Services (Violet)
+            'Kirton McConkie': { color: '#8b5cf6', order: 5 },
+            'Eagle Gate Title': { color: '#8b5cf6', order: 5 },
+        };
+
+        // Fallback for unknown companies
+        const defaultColor = '#64748b'; // Slate
+        const defaultOrder = 99;
+
+        // Sort companies by Group Order, then Name
+        const sortedCompanies = [...companies].sort((a, b) => {
+            const groupA = companyGroups[a.name] || { order: defaultOrder };
+            const groupB = companyGroups[b.name] || { order: defaultOrder };
+
+            if (groupA.order !== groupB.order) {
+                return groupA.order - groupB.order;
+            }
+            return a.name.localeCompare(b.name);
+        });
+
+        // 2. Define Income Bands (Lowest to Highest)
         const bands = [
             { label: '< $50k', min: 0, max: 50000 },
             { label: '$50k - $60k', min: 50000, max: 60000 },
@@ -115,9 +139,10 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
         const bandIndices: Record<string, number> = {};
         const productIndices: Record<string, number> = {};
 
-        // Level 0: Companies
-        companies.forEach((c, i) => {
-            nodes.push({ name: c.name, color: companyColors[i % companyColors.length] });
+        // Level 0: Companies (Sorted)
+        sortedCompanies.forEach((c) => {
+            const group = companyGroups[c.name] || { color: defaultColor };
+            nodes.push({ name: c.name, color: group.color });
             companyIndices[c.name] = nodeIndex++;
         });
 
@@ -127,13 +152,13 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
             bandIndices[b.label] = nodeIndex++;
         });
 
-        // Level 2: Products
+        // Level 2: Products (Sorted by Price/Affordability)
         const products: { type: ProductType | 'gap'; color: string; label: string }[] = [
+            { type: 'gap', color: '#ef4444', label: 'Below Market' }, // Lowest affordability
             { type: 'apartments', color: '#06b6d4', label: 'Apartment' },
             { type: 'condos', color: '#8b5cf6', label: 'Condo' },
             { type: 'blackridge', color: '#f59e0b', label: 'Black Ridge Cove' },
-            { type: 'townhouses', color: '#10b981', label: 'Townhouse' },
-            { type: 'gap', color: '#ef4444', label: 'Gap' }
+            { type: 'townhouses', color: '#10b981', label: 'Townhouse' }, // Highest price
         ];
 
         products.forEach(p => {
@@ -150,7 +175,7 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
         const bandToProductMap = new Map<string, Map<string, number>>();
         bands.forEach(b => bandToProductMap.set(b.label, new Map()));
 
-        companies.forEach(company => {
+        sortedCompanies.forEach(company => {
             const yearsAfterBase = year - company.base_year;
             let scaleFactor = 1.0;
             if (company.projection_years && company.projection_years.length > 0) {
@@ -179,12 +204,14 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
                     if (!band) return; // Should not happen given $250k+ catch-all
 
                     // Link: Company -> Band
+                    // Color: Inherit Company Color
+                    const group = companyGroups[company.name] || { color: defaultColor };
+
                     links.push({
                         source: companyIndices[company.name],
                         target: bandIndices[band.label],
                         value: Math.round(count),
-                        // We can't easily color individual links in Recharts Sankey based on source without custom rendering,
-                        // but Recharts usually handles source-coloring by default or we can try to force it.
+                        fill: group.color // Explicitly set fill for link coloring
                     });
 
                     // Determine Product Affordability
@@ -207,24 +234,31 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
             });
         });
 
-        // Consolidate Company -> Band links (Recharts might need unique links or it sums them up?
-        // Recharts Sankey usually sums multiple links between same nodes.
-        // But to be safe and cleaner, let's aggregate them ourselves.)
-        const aggregatedCompanyToBand = new Map<string, number>(); // Key: "CompIdx_BandIdx"
+        // Consolidate Company -> Band links
+        // We need to aggregate them but keep the color info?
+        // Actually, Recharts Sankey doesn't support multiple links between same nodes with different colors well.
+        // It usually merges them.
+        // However, since we are grouping companies, each company is a unique node.
+        // So Company A -> Band X is a unique link. We don't need to merge across companies.
+        // We just need to merge multiple segments (H1, H2, H3) from the SAME company to the SAME band.
+
+        const aggregatedCompanyToBand = new Map<string, { value: number, fill: string }>(); // Key: "CompIdx_BandIdx"
         const finalLinks: any[] = [];
 
         links.forEach(l => {
             const key = `${l.source}_${l.target}`;
-            const current = aggregatedCompanyToBand.get(key) || 0;
-            aggregatedCompanyToBand.set(key, current + l.value);
+            const current = aggregatedCompanyToBand.get(key) || { value: 0, fill: l.fill };
+            aggregatedCompanyToBand.set(key, { value: current.value + l.value, fill: current.fill });
         });
 
-        aggregatedCompanyToBand.forEach((value, key) => {
+        aggregatedCompanyToBand.forEach((data, key) => {
             const [source, target] = key.split('_').map(Number);
-            finalLinks.push({ source, target, value });
+            finalLinks.push({ source, target, value: data.value, fill: data.fill });
         });
 
         // Create Band -> Product links
+        // Color: Use Band Color (Neutral) to show flow volume, or maybe Product Color?
+        // Let's use a neutral gray or the band color to keep the middle clean.
         bandToProductMap.forEach((productMap, bandLabel) => {
             const bandIndex = bandIndices[bandLabel];
             productMap.forEach((count, productType) => {
@@ -232,7 +266,8 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
                     finalLinks.push({
                         source: bandIndex,
                         target: productIndices[productType],
-                        value: count
+                        value: count,
+                        fill: '#94a3b8' // Neutral slate-400 for the second hop
                     });
                 }
             });
