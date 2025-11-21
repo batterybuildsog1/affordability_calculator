@@ -65,6 +65,31 @@ const CustomNode = ({ x, y, width, height, index, payload, containerWidth }: any
     );
 };
 
+// Custom link to support individual coloring
+const CustomLink = (props: any) => {
+    const { sourceX, sourceY, targetX, targetY, linkWidth, payload } = props;
+    const fill = payload.fill || '#8884d8';
+
+    return (
+        <path
+            d={`
+        M${sourceX},${sourceY + linkWidth / 2}
+        C${sourceX + 100},${sourceY + linkWidth / 2}
+         ${targetX - 100},${targetY + linkWidth / 2}
+         ${targetX},${targetY + linkWidth / 2}
+        L${targetX},${targetY - linkWidth / 2}
+        C${targetX - 100},${targetY - linkWidth / 2}
+         ${sourceX + 100},${sourceY - linkWidth / 2}
+         ${sourceX},${sourceY - linkWidth / 2}
+        Z
+      `}
+            fill={fill}
+            fillOpacity={0.4}
+            stroke="none"
+        />
+    );
+};
+
 export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
     const { rate, year, scenario } = useAffordability();
 
@@ -284,9 +309,10 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
                 <Sankey
                     data={data}
                     node={CustomNode}
+                    link={CustomLink}
                     nodePadding={20}
                     margin={{ left: 200, right: 200, top: 20, bottom: 20 }}
-                    link={{ strokeOpacity: 0.3 }}
+                    iterations={0} // Disable auto-sorting to respect our node order
                 >
                     <Tooltip
                         contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff' }}
