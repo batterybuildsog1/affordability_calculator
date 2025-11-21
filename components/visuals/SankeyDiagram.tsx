@@ -16,7 +16,28 @@ interface SankeyDiagramProps {
 
 // Custom node for the Sankey to match the dark theme
 const CustomNode = ({ x, y, width, height, index, payload, containerWidth }: any) => {
-    const isOut = x + width + 6 > containerWidth;
+    // Determine if node is on the left (Company), middle (Band), or right (Product)
+    // We can infer this roughly by x position relative to container width
+    const isLeft = x < containerWidth * 0.33;
+    const isRight = x > containerWidth * 0.66;
+
+    let textX = x + width / 2;
+    let textAnchor: "middle" | "end" | "start" | "inherit" | undefined = "middle";
+    let dx = 0;
+
+    if (isLeft) {
+        textX = x - 10;
+        textAnchor = "end";
+    } else if (isRight) {
+        textX = x + width + 10;
+        textAnchor = "start";
+    } else {
+        // Middle nodes (Bands) - keep inside or centered if space permits
+        // If the band is very thin, maybe hide text or move it?
+        // For now, center it.
+        textX = x + width / 2;
+        textAnchor = "middle";
+    }
 
     return (
         <Layer key={`node-${index}`}>
@@ -29,9 +50,9 @@ const CustomNode = ({ x, y, width, height, index, payload, containerWidth }: any
                 fillOpacity={0.9}
             />
             <text
-                x={x < containerWidth / 2 ? x + width + 6 : x - 6}
+                x={textX}
                 y={y + height / 2}
-                textAnchor={x < containerWidth / 2 ? "start" : "end"}
+                textAnchor={textAnchor}
                 alignmentBaseline="middle"
                 fontSize={12}
                 fill="#fff"
@@ -223,13 +244,13 @@ export default function SankeyDiagram({ companies }: SankeyDiagramProps) {
     if (data.nodes.length === 0) return null;
 
     return (
-        <div className="h-[800px] w-full bg-space-900/20 rounded-2xl border border-white/5 p-4">
+        <div className="h-[900px] w-full bg-space-900/20 rounded-2xl border border-white/5 p-4">
             <ResponsiveContainer width="100%" height="100%">
                 <Sankey
                     data={data}
                     node={CustomNode}
-                    nodePadding={10}
-                    margin={{ left: 20, right: 150, top: 20, bottom: 20 }}
+                    nodePadding={20}
+                    margin={{ left: 200, right: 200, top: 20, bottom: 20 }}
                     link={{ strokeOpacity: 0.3 }}
                 >
                     <Tooltip

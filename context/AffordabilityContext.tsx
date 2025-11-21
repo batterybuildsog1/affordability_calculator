@@ -77,10 +77,12 @@ export function AffordabilityProvider({ children }: { children: React.ReactNode 
           if (data.rate) {
             setLiveFHARate(data.rate);
 
-            // If user has useLiveFHA enabled, update rate
-            if (useLiveFHA) {
-              setRateState(data.rate);
-            }
+            // Auto-apply the live rate if we haven't explicitly disabled it
+            // Or just always apply it on load to ensure freshness, user can override
+            setRateState(data.rate);
+
+            // Also update the toggle state to reflect we are using live data
+            setUseLiveFHAState(true);
           }
         }
       } catch (error) {
@@ -89,7 +91,7 @@ export function AffordabilityProvider({ children }: { children: React.ReactNode 
     }
 
     fetchLiveRate();
-  }, [isHydrated, useLiveFHA]);
+  }, [isHydrated]); // Removed useLiveFHA dependency to avoid loops, just run once on hydration
 
   // Setters with localStorage persistence
   const setRate = (newRate: number) => {
